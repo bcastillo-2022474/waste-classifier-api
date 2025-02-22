@@ -1,0 +1,1 @@
+# Waste detection system API
