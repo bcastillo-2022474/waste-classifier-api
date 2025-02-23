@@ -1,7 +1,7 @@
 import unittest
 from unittest.mock import Mock
 
-from core.app.waste_item.application.exceptions import EmptyImageError, UnableToProcessImageError
+from core.app.waste_item.application.exceptions import EmptyImageException, UnableToProcessImageException
 from core.app.waste_item.application.use_cases.scan_waste_item import ScanWasteItemUseCase
 from core.app.waste_item.domain.entities import WasteItemInfo, WasteItemType, Image
 from core.app.waste_item.domain.ports import ImageScannerRepository
@@ -41,7 +41,7 @@ class TestScanWasteItemUseCase(unittest.TestCase):
         )
 
 
-        with self.assertRaises(EmptyImageError):
+        with self.assertRaises(EmptyImageException):
             use_case.execute(image=image_mock)
 
         self.item_scanner_repository_mock.assert_not_called()
@@ -60,7 +60,7 @@ class TestScanWasteItemUseCase(unittest.TestCase):
 
         self.item_scanner_repository_mock.scan.return_value = None
 
-        with self.assertRaises(UnableToProcessImageError):
+        with self.assertRaises(UnableToProcessImageException):
             use_case.execute(image=image_mock)
 
         self.item_scanner_repository_mock.scan.assert_called_once_with(image_mock)
