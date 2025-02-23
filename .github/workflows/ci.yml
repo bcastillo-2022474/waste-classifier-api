@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     # On every pull request
   pull_request:
-    branches: [main, develop]
+    branches: [master, develop]
 
 jobs:
   test:
