@@ -21,19 +21,21 @@ class TestScanWasteItemUseCase(unittest.TestCase):
 
 
     def test_item_successfully_saved(self):
-        self.image_repository.save.return_value = "http://example.com/image.jpg"
+        image_id = uuid4()
+        self.image_repository.save.return_value = image_id
         result_mock = WasteItem(
             type=WasteItemType.NON_RECYCLABLE,
             material="plastic",
             approximate_weight=1.5,
-            image="http://example.com/image.jpg",
+            image=image_id,
             created_by_id=uuid4(),
             created_at=datetime.now(),
             updated_at=datetime.now(),
             user_id=uuid4(),
             id=uuid4()
         )
-        self.waste_item_repository.save.return_value = result_mock
+
+        self.waste_item_repository.create.return_value = result_mock
 
         result = self.use_case.execute(
             waste_item=WasteItemInfo(
@@ -52,7 +54,7 @@ class TestScanWasteItemUseCase(unittest.TestCase):
 
         self.assertEqual(result, result_mock)
         self.image_repository.save.assert_called_once()
-        self.waste_item_repository.save.assert_called_once()
+        self.waste_item_repository.create.assert_called_once()
 
     def test_item_saved_with_empty_image(self):
         with self.assertRaises(EmptyImageException):
@@ -71,7 +73,7 @@ class TestScanWasteItemUseCase(unittest.TestCase):
                 user_id=uuid4(),
             )
         self.image_repository.save.assert_not_called()
-        self.waste_item_repository.save.assert_not_called()
+        self.waste_item_repository.create.assert_not_called()
 
 
     def test_item_image_not_saved(self):
@@ -93,4 +95,4 @@ class TestScanWasteItemUseCase(unittest.TestCase):
             )
 
         self.image_repository.save.assert_called_once()
-        self.waste_item_repository.save.assert_not_called()
+        self.waste_item_repository.create.assert_not_called()

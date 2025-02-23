@@ -19,8 +19,6 @@ class CreateWasteItemUseCase:
         if not image_url:
             raise UnableToSaveImageException("Error saving image")
 
-        print(image_url)
-
         return self.waste_item_repository.create(WasteItem(
             type=waste_item.type,
             material=waste_item.material,

@@ -41,7 +41,7 @@ class WasteItem(models.Model):
             user_id=self.user.id,
             image=self.image,
             material=self.material,
-            type=self.type,
+            type=WasteItemTypes[self.type],
             approximate_weight=self.approximate_weight,
             created_at=self.created_at,
             updated_at=self.updated_at,
