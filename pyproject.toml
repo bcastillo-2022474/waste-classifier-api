@@ -1,5 +1,5 @@
 [project]
-name = "back-progra"
+name = "waste-classifier-api"
 version = "0.1.0"
 description = ""
 authors = [
