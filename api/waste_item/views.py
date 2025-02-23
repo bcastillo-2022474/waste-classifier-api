@@ -2,15 +2,49 @@ from django.core.files.uploadedfile import UploadedFile
 from rest_framework.parsers import MultiPartParser
 from rest_framework.response import Response
 from rest_framework.views import APIView
-
+import json
 
 from api.utils import get_error_status_code_from_exception
-from api.waste_item.adapters import ImageScannerRepositoryImpl
+from api.waste_item.adapters import ImageScannerRepositoryImpl, WasteItemRepositoryImpl, ImageRepositoryImpl
+from core.app.waste_item.application.use_cases.create_waste_item import CreateWasteItemUseCase
 from core.app.waste_item.application.use_cases.scan_waste_item import ScanWasteItemUseCase
-from core.app.waste_item.domain.entities import Image
+from core.app.waste_item.domain.entities import Image, WasteItemInfo, WasteItemType
 
 
 # Create your views here.
+
+class WasteItemApiView(APIView):
+    parser_classes = (MultiPartParser,)
+
+    @staticmethod
+    def post(request, *args, **kwargs):
+        use_case = CreateWasteItemUseCase(
+            waste_item_repository=WasteItemRepositoryImpl(),
+            image_repository=ImageRepositoryImpl()
+        )
+        image: UploadedFile = request.FILES["image"]
+        data = json.loads(request.data['data'])
+
+        try:
+            waste_item = use_case.execute(
+                waste_item=WasteItemInfo(
+                    type=WasteItemType(data["type"]),
+                    material=data["material"],
+                    approximate_weight=data["approximate_weight"]
+                ),
+                user_id=request.user.id,
+                image=Image(
+                    name=image.name,
+                    content=image.read(),
+                    content_type=image.content_type,
+                    size=image.size,
+                )
+            )
+            return Response(waste_item)
+        except Exception as e:
+            status_response, detail = get_error_status_code_from_exception(e)
+            return Response(status=status_response, data=detail)
+
 
 class WasteImageScanApiView(APIView):
     parser_classes = (MultiPartParser,)

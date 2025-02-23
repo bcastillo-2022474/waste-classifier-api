@@ -3,7 +3,18 @@ from django.utils.encoding import force_str
 from pydantic import ValidationError as PydanticValidationError
 from rest_framework import status
 
-errors = []
+from core.app.waste_item.application.exceptions import UnableToProcessImageException, UnableToSaveImageException, \
+    EmptyImageException
+
+errors = [
+    (DjangoValidationError, status.HTTP_400_BAD_REQUEST),
+    (PydanticValidationError, status.HTTP_400_BAD_REQUEST),
+    (ValueError, status.HTTP_400_BAD_REQUEST),
+    (EmptyImageException, status.HTTP_400_BAD_REQUEST),
+    (UnableToProcessImageException, status.HTTP_500_INTERNAL_SERVER_ERROR),
+    (UnableToSaveImageException, status.HTTP_500_INTERNAL_SERVER_ERROR),
+    (Exception, status.HTTP_500_INTERNAL_SERVER_ERROR)
+]
 
 
 def _extract_error_detail(error):

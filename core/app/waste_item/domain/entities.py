@@ -15,7 +15,7 @@ class WasteItemType(str, Enum):
 class WasteItem(BaseModel):
     id: UUID = Field(default_factory=uuid4)
     user_id: UUID
-    image: str
+    image: UUID
     material: str
     type: WasteItemType
     approximate_weight: float
