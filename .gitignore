@@ -1,2 +1,10 @@
 .venv
 .idea
+
+.env
+
+# Django
+**/__pycache__/*
+*.log
+*.pot
+*.pyc

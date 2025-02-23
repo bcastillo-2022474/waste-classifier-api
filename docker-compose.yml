@@ -1,0 +1,42 @@
+services:
+  database:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      LC_COLLATE: es_ES.UTF-8
+      LC_CTYPE: es_ES.UTF-8
+      LANG: es_ES.UTF-8
+      LANGUAGE: es_ES:es
+
+    ports:
+      - "${POSTGRES_PORT}:5432"
+    volumes:
+      - waste-db-data:/var/lib/postgresql/data
+
+  minio:
+    image: minio/minio:latest
+    restart: always
+    ports:
+      - 9000:9000
+      - 9001:9001
+    networks:
+      - minionet
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
+      MINIO_ADDRESS: ":9000"
+      MINIO_CONSOLE_ADDRESS: ":9001"
+    volumes:
+      - minio_asigbo_data:/data
+    command: server /export
+
+networks:
+  minionet:
+    driver: bridge
+
+volumes:
+    waste-db-data:
+    minio_asigbo_data:
+      driver: local
