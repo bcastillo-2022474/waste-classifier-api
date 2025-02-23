@@ -1,4 +1,4 @@
-from pydantic.v1 import Protocol
+from typing import Protocol
 
 from .entities import WasteItemInfo, Image
 

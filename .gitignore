@@ -8,3 +8,6 @@
 *.log
 *.pot
 *.pyc
+
+.coverage
+.coverage.*

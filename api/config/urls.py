@@ -27,7 +27,7 @@ urlpatterns += [
         "api/v1/",
         include(
             [
-                # path("", include("waste_item.urls")),
+                path("", include("waste_item.urls")),
             ]
         ),
     ),
