@@ -1,0 +1,18 @@
+default: dev
+
+test:
+	rm -rf htmlcov
+	python -m coverage run -m unittest discover core/tests
+	python -m coverage report
+
+dev:
+	dotenv -f .env run -- .venv/Scripts/python api/manage.py runserver 8000
+
+migrate:
+	dotenv -f .env run -- .venv/Scripts/python api/manage.py migrate
+
+makemigrations:
+	dotenv -f .env run -- .venv/Scripts/python api/manage.py makemigrations
+
+createsuperuser:
+	dotenv -f .env run -- .venv/Scripts/python api/manage.py createsuperuser
