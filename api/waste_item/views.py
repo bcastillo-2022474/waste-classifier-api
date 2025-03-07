@@ -9,6 +9,7 @@ from api.waste_item.adapters import ImageScannerRepositoryImpl, WasteItemReposit
 from core.app.waste_item.application.use_cases.create_waste_item import CreateWasteItemUseCase
 from core.app.waste_item.application.use_cases.scan_waste_item import ScanWasteItemUseCase
 from core.app.waste_item.domain.entities import Image, WasteItemInfo, WasteItemType
+from core.app.waste_item.application.use_cases.list_all_items import ListAllItemsUseCase
 
 
 # Create your views here.
@@ -44,6 +45,21 @@ class WasteItemApiView(APIView):
         except Exception as e:
             status_response, detail = get_error_status_code_from_exception(e)
             return Response(status=status_response, data=detail)
+        
+    @staticmethod
+    def get(request, *args, **kwargs):
+        ## definicion del repo
+        repository = WasteItemRepositoryImpl()
+        use_case = ListAllItemsUseCase(waste_item_repository=repository)
+        ## logica
+        try:
+            waste_items = use_case.execute()
+            return Response(waste_items)
+        except Exception as e:
+            print(e)
+            status_response, detail = get_error_status_code_from_exception(e)
+            return Response(status=status_response, data=detail)
+
 
 
 class WasteImageScanApiView(APIView):
