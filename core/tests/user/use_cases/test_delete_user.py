@@ -17,15 +17,15 @@ class TestGetSelfUserUseCase(unittest.TestCase):
     def test_get_self_user(self):
         user_id = uuid4()
         user_mock = User(
-        id=user_id,
-        first_name="John",
-        last_name="Doe",
-        email="carlosaltan@gmail.com",
-        is_active=True,
-        date_joined=datetime.now(),
-        created_at=datetime.now(),
-        updated_at=datetime.now(),
-        created_by_id=uuid4()
+            id=user_id,
+            first_name="John",
+            last_name="Doe",
+            email="carlosaltan@gmail.com",
+            is_active=True,
+            date_joined=datetime.now(),
+            created_at=datetime.now(),
+            updated_at=datetime.now(),
+            created_by_id=uuid4()
         )
 
         self.user_repository.get.return_value = user_mock
