@@ -9,6 +9,6 @@ class DeleteUserUseCase:
     def execute(self, user_id: str) -> None:
         user = self.user_repository.find_by_id(user_id)
         if user is None:
-            raise UserNotFound
+            raise UserNotFound("User was not found")
         self.user_repository.delete(user)
 
