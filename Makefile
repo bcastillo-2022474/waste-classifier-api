@@ -16,3 +16,6 @@ makemigrations:
 
 createsuperuser:
 	dotenv -f .env run -- .venv/Scripts/python api/manage.py createsuperuser
+
+venv:
+	.venv/Scripts/Activate.ps1
