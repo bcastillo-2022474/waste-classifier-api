@@ -25,6 +25,9 @@ class WasteItemRepositoryImpl(WasteItemRepository):
         item = WasteItemModel.from_entity(entity=waste_item)
         item.save(force_insert=True)
         return item.to_entity()
+    
+    def list(self):
+        return [item.to_entity() for item in WasteItemModel.objects.all()]
 
 class ImageRepositoryImpl(ImageRepository):
     def save(self, image: Image) -> UUID:

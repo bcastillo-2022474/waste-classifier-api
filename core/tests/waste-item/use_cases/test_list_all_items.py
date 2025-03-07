@@ -42,9 +42,9 @@ class TestListAllItems(unittest.TestCase):
             )
         ]
 
-        self.waste_item_repository.list_all.return_value = result_mock
+        self.waste_item_repository.list.return_value = result_mock
 
         result = self.use_case.execute()
 
         self.assertEqual(result, result_mock)
-        self.waste_item_repository.list_all.assert_called_once()
+        self.waste_item_repository.list.assert_called_once()
