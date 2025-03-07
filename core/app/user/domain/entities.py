@@ -2,8 +2,6 @@ from typing import Optional
 from uuid import UUID
 from datetime import datetime
 from uuid import uuid4
-
-from pydantic import EmailStr
 from pydantic import BaseModel, Field
 
 
@@ -11,7 +9,7 @@ class User(BaseModel):
     id: UUID = Field(default_factory=uuid4)
     first_name: str = Field("", title="First name")
     last_name: str = Field("", title="Last name")
-    email: EmailStr = Field("", title="Email")
+    email: str = Field("", title="Email")
     is_active: bool = Field(True, title="Active status")
     date_joined: datetime = Field(default_factory=datetime.now)
 
