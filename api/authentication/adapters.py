@@ -3,8 +3,13 @@ from uuid import uuid4, UUID
 from core.app.user.domain.entities import User
 from authentication.models import User as UserModel
 from core.app.user.domain.ports import UserRepository
+from core.app.user.application.exceptions import UserNotFoundException
 
 class UserRepositoryImplements(UserRepository): 
+    
+    def find_by_id(self, user_id: UUID) -> User:
+        user = UserModel.objects.filter(id=user_id).first()
+        return user.to_entity() if user else None
     
     def list(self):
         return [user.to_entity() for user in UserModel.objects.all()]
@@ -24,7 +29,10 @@ class UserRepositoryImplements(UserRepository):
         return user.to_entity()
 
     def delete(self, user_id: UUID):
-        UserModel.objects.get(id=user_id).delete()
+        user = UserModel.objects.filter(id=user_id).first()
+        if not user:
+            raise UserNotFoundException(f"User with id {user_id} not found")
+        user.delete()
 
     def exists(self, user_id: UUID) -> bool:
         return UserModel.objects.filter(id=user_id).exists()

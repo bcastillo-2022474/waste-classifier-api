@@ -57,3 +57,17 @@ class User(AbstractBaseUser, PermissionsMixin):
     REQUIRED_FIELDS = []
     USERNAME_FIELD = "email"
     EMAIL_FIELD = "email"
+
+    def to_entity(self):
+        from core.app.user.domain.entities import User as UserEntity
+
+        user = UserEntity(
+            id=self.id,
+            first_name=self.first_name,
+            last_name=self.last_name,
+            email=self.email,
+            is_active=self.is_active,
+            date_joined=self.date_joined
+        )   
+
+        return user
