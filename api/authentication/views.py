@@ -1,11 +1,11 @@
 from rest_framework_simplejwt.views import TokenObtainPairView
 
-from core.app.user.application.use_cases.delete_user import DeleteUserUseCase
 from .serializers import CustomTokenObtainPairSerializer
 
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from api.authentication.adapters import UserRepositoryImplements
+from core.app.user.application.use_cases.delete_user import DeleteUserUseCase
 from core.app.user.application.use_cases.get_self_user import GetSelfUserUseCase
 from api.utils import get_error_status_code_from_exception
 

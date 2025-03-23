@@ -23,10 +23,11 @@ class WasteItemApiView(APIView):
             waste_item_repository=WasteItemRepositoryImpl(),
             image_repository=ImageRepositoryImpl()
         )
-        image: UploadedFile = request.FILES["image"]
-        data = json.loads(request.data['data'])
 
         try:
+            image: UploadedFile = request.FILES["image"]
+            data = json.loads(request.data['data'])
+
             waste_item = use_case.execute(
                 waste_item=WasteItemInfo(
                     type=WasteItemType(data["type"]),

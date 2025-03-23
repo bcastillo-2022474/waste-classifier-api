@@ -13,7 +13,7 @@ errors = [
     (EmptyImageException, status.HTTP_400_BAD_REQUEST),
     (UnableToProcessImageException, status.HTTP_500_INTERNAL_SERVER_ERROR),
     (UnableToSaveImageException, status.HTTP_500_INTERNAL_SERVER_ERROR),
-    (Exception, status.HTTP_500_INTERNAL_SERVER_ERROR)
+    (Exception, status.HTTP_500_INTERNAL_SERVER_ERROR),
     (UserNotFoundException, status.HTTP_404_NOT_FOUND)
 ]
 
