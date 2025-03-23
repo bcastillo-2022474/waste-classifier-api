@@ -12,8 +12,6 @@ from core.app.waste_item.domain.entities import Image, WasteItemInfo, WasteItemT
 from core.app.waste_item.application.use_cases.list_all_items import ListAllItemsUseCase
 
 
-# Create your views here.
-
 class WasteItemApiView(APIView):
     parser_classes = (MultiPartParser,)
 

@@ -22,12 +22,12 @@ urlpatterns = [
 ]
 
 urlpatterns += [
-    path("", include("authentication.urls")),
     path(
         "api/v1/",
         include(
             [
-                path("waste-item/", include("waste_item.urls")),
+                path("", include("authentication.urls")),
+                path("", include("waste_item.urls")),
             ]
         ),
     ),
