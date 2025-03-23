@@ -36,12 +36,14 @@ class WasteItem(models.Model):
         )
 
     def to_entity(self) -> WasteItemEntity:
+        types = dict(WasteItemTypes)
+
         return WasteItemEntity(
             id=self.id,
             user_id=self.user.id,
             image=self.image,
             material=self.material,
-            type=WasteItemTypes[self.type],
+            type=types[self.type.name],
             approximate_weight=self.approximate_weight,
             created_at=self.created_at,
             updated_at=self.updated_at,
@@ -49,4 +51,4 @@ class WasteItem(models.Model):
         )
 
     def __str__(self):
-        return self.name
+        return f"WasteItem(id={self.id}, material={self.material}, type={self.get_type_display()}, weight={self.approximate_weight}kg)"
