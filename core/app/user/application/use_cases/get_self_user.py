@@ -9,7 +9,7 @@ class GetSelfUserUseCase:
         self.user_repository = user_repository
 
     def execute(self, user_id: UUID) -> User:
-        user = self.user_repository.get(user_id)
+        user = self.user_repository.get_self_user(user_id)
         if not user:
             raise UserNotFoundException("User not found")
         return user
