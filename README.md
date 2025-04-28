@@ -1,6 +1,19 @@
-# Waste Classifier API
+# Trashify API
+
+> Built with passion, despair, and questionable time management.  
+> Worth: **4 points**  
+> Effort: **All of my remaining will to live**
 
 Backend service for scanning, categorizing, and tracking waste items based on images. Built on Django + DRF with a hexagonal architecture, using PostgreSQL and MinIO for storage.
+
+## 📦 What This Project Does (Allegedly)
+
+- User uploads photo of trash.
+- App says: "bro, that's plastic. 300g of it. Recyclable."
+- User pretends to care and edits details if they feel like it.
+- Data gets saved for *statistics* nobody will ever check.
+- That's it. That's the dream.
+
 
 ## Setup Instructions
 
@@ -11,13 +24,13 @@ Because nothing says "easy setup" like 15 tools duct-taped together, here’s ho
 git clone https://github.com/bcastillo-2022474/waste-classifier-api.git
 cd waste-classifier-api
 ```
-(**Yes**, you forgot the `cd` before.)
 
 ---
 
 ### 2. Configure Environment Variables
 Create a `.env` file by copying the provided example:
 ```bash
+touch .env
 cp .env.example .env
 ```
 Then, **update** the `.env` with your own MinIO access/secret keys after setting up the MinIO bucket (see MinIO setup section below if you like doing things out of order).
@@ -117,6 +130,7 @@ This project follows **Hexagonal Architecture** (Ports and Adapters pattern):
   Found in the `core/` directory — totally unaware that your database, file storage, or API even exist.  
 - **Infrastructure Layer**:  
   Found in the `api/` directory — handles Django, REST, storage, authentication, and telling the core what to do.
+  (Translation: You can replace the database, storage, or framework later without too many tears.)
 
 The basic idea is:  
 > We built a beautiful library and then bolted a web server onto it like a sad Lego set.
@@ -133,6 +147,18 @@ The basic idea is:
 ├── pyproject.toml
 └── README.md  # You're here
 ```
+
+---
+
+# 🪦 Known Issues
+
+- Setup might randomly explode if you breathe wrong.
+- Rate-limiting? HAHAHA no. (OpenAI might make me poor lmao)
+- Abuse protection? What's that?
+- Works best if nobody uses it.
+- Built for Linux.  
+  Windows users? May God have mercy on your souls. I use arch btw
+
 
 ---
 
@@ -169,4 +195,8 @@ Photo Uploaded → [Scan Waste Item Use Case]
 
 ---
 
-# You're Welcome.
+# ✌️ Thanks for Reading
+
+If you actually read this whole README, you’re legally required to give me the whole score.
+
+**– Built by Joao Castillo, a ton of misplaced ambition, and another 4 guys whos names are not Relevant -**
