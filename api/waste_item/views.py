@@ -10,7 +10,7 @@ from core.app.waste_item.application.use_cases.create_waste_item import CreateWa
 from core.app.waste_item.application.use_cases.scan_waste_item import ScanWasteItemUseCase
 from core.app.waste_item.domain.entities import Image, WasteItemInfo, WasteItemType
 from core.app.waste_item.application.use_cases.list_all_items import ListAllItemsUseCase
-
+from rest_framework.permissions import AllowAny
 
 class WasteItemApiView(APIView):
     parser_classes = (MultiPartParser,)
@@ -63,6 +63,7 @@ class WasteItemApiView(APIView):
 
 class WasteImageScanApiView(APIView):
     parser_classes = (MultiPartParser,)
+    permission_classes = [AllowAny]
 
     @staticmethod
     def post(request, *args, **kwargs):
