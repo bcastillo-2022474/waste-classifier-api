@@ -11,6 +11,7 @@ from core.app.waste_item.application.use_cases.scan_waste_item import ScanWasteI
 from core.app.waste_item.domain.entities import Image, WasteItemInfo, WasteItemType
 from core.app.waste_item.application.use_cases.list_all_items import ListAllItemsUseCase
 from rest_framework.permissions import AllowAny
+from core.app.waste_item.application.use_cases.get_one_item_by_id import GetOneItemByIdUseCase
 
 class WasteItemApiView(APIView):
     parser_classes = (MultiPartParser,)
@@ -58,6 +59,27 @@ class WasteItemApiView(APIView):
             print(e)
             status_response, detail = get_error_status_code_from_exception(e)
             return Response(status=status_response, data=detail)
+
+
+
+class WasteItemByIdApiView(APIView):
+    parser_classes = (MultiPartParser,)
+    @staticmethod
+    def get(request, *args, **kwargs):
+        ## definicion del repo
+        repository = WasteItemRepositoryImpl()
+        use_case = GetOneItemByIdUseCase(waste_item_repository=repository)
+        ## logica
+        # get id from url
+        waste_item_id = kwargs.get("waste_item_id")
+        try:
+            waste_item = use_case.execute(waste_item_id=waste_item_id)
+            return Response(waste_item)
+        except Exception as e:
+            print(e)
+            status_response, detail = get_error_status_code_from_exception(e)
+            return Response(status=status_response, data=detail)
+         
 
 
 
