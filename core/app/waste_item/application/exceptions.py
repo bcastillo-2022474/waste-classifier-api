@@ -12,3 +12,7 @@ class UnableToSaveImageException(Exception):
     """
     Error when the image repository is unable to save the image
     """
+class WasteItemNotFoundException(Exception):
+    """
+    Error when the waste item is not found in the repository
+    """

@@ -63,15 +63,11 @@ class WasteItemApiView(APIView):
 
 
 class WasteItemByIdApiView(APIView):
-    parser_classes = (MultiPartParser,)
     @staticmethod
-    def get(request, *args, **kwargs):
+    def get(self, request, waste_item_id, *args, **kwargs):
         ## definicion del repo
         repository = WasteItemRepositoryImpl()
         use_case = GetOneItemByIdUseCase(waste_item_repository=repository)
-        ## logica
-        # get id from url
-        waste_item_id = kwargs.get("waste_item_id")
         try:
             waste_item = use_case.execute(waste_item_id=waste_item_id)
             return Response(waste_item)

@@ -31,8 +31,8 @@ class WasteItemRepositoryImpl(WasteItemRepository):
     
     def get(self, waste_item_id: str) -> WasteItem:
         try:
-            item = WasteItemModel.objects.get(id=waste_item_id)
-            return item.to_entity()
+            item = WasteItemModel.objects.filter(id=waste_item_id).first()
+            return item.to_entity() if item else None
         except WasteItemModel.DoesNotExist:
             raise ValueError(f"Waste item with ID {waste_item_id} not found.") 
 
