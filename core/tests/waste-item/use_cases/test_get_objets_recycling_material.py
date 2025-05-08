@@ -2,7 +2,7 @@ import unittest
 from unittest.mock import MagicMock
 from core.app.waste_item.application.use_cases.get_objets_recycling_material import CountMaterialAmountUseCase
 from core.app.waste_item.domain.ports import WasteItemRepository
-from core.app.waste_item.application.stats_material_dto import StatsWasteItem
+from core.app.waste_item.application.dto import StatsWasteItem
 
 # Removed duplicate import block
 

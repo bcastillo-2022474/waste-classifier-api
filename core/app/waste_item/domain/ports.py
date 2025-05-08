@@ -2,7 +2,7 @@ from typing import Protocol
 from uuid import UUID
 
 from .entities import WasteItemInfo, Image, WasteItem
-from ..application.stats_material_dto import StatsWasteItem
+from ..application.dto import StatsWasteItem
 
 
 class ImageScannerRepository(Protocol):
