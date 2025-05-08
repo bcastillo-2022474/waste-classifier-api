@@ -44,7 +44,7 @@ class WasteItemInfo(BaseModel):
 
     def __getitem__(self, item):
         return getattr(self, item)
-
+    
 class Image:
     def __init__(self, name: str, content_type: str, size: int, content: bytes):
         self.name = name          # Original filename
