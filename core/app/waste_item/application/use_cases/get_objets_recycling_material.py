@@ -1,6 +1,6 @@
 from core.app.waste_item.domain.ports import WasteItemRepository
 
-class GetObjetsRecyclingMaterialUseCase:
+class CountMaterialAmountUseCase:
     def __init__(self, waste_item_repository: WasteItemRepository):
         self.waste_item_repository = waste_item_repository
 
