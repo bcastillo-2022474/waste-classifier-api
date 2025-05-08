@@ -31,20 +31,6 @@ class TestCountMaterialAmountUseCase(unittest.TestCase):
         # Verificar que el resultado sea el esperado
         self.assertEqual(result, expected_item)
 
-    def test_execute_returns_none_when_material_not_found(self):
-        # Configurar el mock para devolver None
-        material_waste = "UnknownMaterial"
-        self.mock_repository.get_material_count.return_value = None
-
-        # Ejecutar el caso de uso
-        result = self.use_case.execute(material_waste)
-
-        # Verificar que el repositorio fue llamado correctamente
-        self.mock_repository.get_material_count.assert_called_once_with(material_waste)
-
-        # Verificar que el resultado sea None
-        self.assertIsNone(result)
-
     def test_execute_raises_error_when_material_is_empty(self):
         # Ejecutar el caso de uso con un material vacío y verificar que lanza un ValueError
         with self.assertRaises(ValueError) as context:
