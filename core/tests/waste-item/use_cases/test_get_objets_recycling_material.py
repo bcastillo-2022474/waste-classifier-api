@@ -4,11 +4,7 @@ from core.app.waste_item.application.use_cases.get_objets_recycling_material imp
 from core.app.waste_item.domain.ports import WasteItemRepository
 from core.app.waste_item.application.stats_material_dto import StatsWasteItem
 
-import unittest
-from unittest.mock import MagicMock
-from core.app.waste_item.application.use_cases.get_objets_recycling_material import CountMaterialAmountUseCase
-from core.app.waste_item.domain.ports import WasteItemRepository
-from core.app.waste_item.application.stats_material_dto import StatsWasteItem
+# Removed duplicate import block
 
 class TestCountMaterialAmountUseCase(unittest.TestCase):
     def setUp(self):
