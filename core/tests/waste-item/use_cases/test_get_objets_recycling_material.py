@@ -23,8 +23,7 @@ class TestGetObjetsRecyclingMaterialUseCase(unittest.TestCase):
         self.mock_repository.getMaterial.assert_called_once_with(material_waste)
 
         # Verificar que el resultado sea el esperado
-        self.assertEqual(result, {"material": "Plastic", "count": 10})
-
+        self.assertEqual(result, StatsWasteItem(material="Plastic", count=10))
     def test_execute_returns_none_when_material_not_found(self):
         # Configurar el mock para devolver None
         material_waste = "UnknownMaterial"
