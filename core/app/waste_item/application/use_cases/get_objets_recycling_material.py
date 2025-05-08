@@ -8,8 +8,5 @@ class GetObjetsRecyclingMaterialUseCase:
         if not material_waste:
             raise ValueError("El material no puede estar vacío.")
 
-        item = self.waste_item_repository.getMaterial(material_waste)
-        if item is None:
-            return None
-
-        return {"material": item.material, "count": item.count}
+        item_stats = self.waste_item_repository.get_material_count(material_waste)
+        return item_stats
