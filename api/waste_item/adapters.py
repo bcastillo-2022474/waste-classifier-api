@@ -28,6 +28,13 @@ class WasteItemRepositoryImpl(WasteItemRepository):
     
     def list(self):
         return [item.to_entity() for item in WasteItemModel.objects.all()]
+    
+    def get(self, waste_item_id: str) -> WasteItem:
+        try:
+            item = WasteItemModel.objects.filter(id=waste_item_id).first()
+            return item.to_entity() if item else None
+        except WasteItemModel.DoesNotExist:
+            raise ValueError(f"Waste item with ID {waste_item_id} not found.") 
 
 class ImageRepositoryImpl(ImageRepository):
     def save(self, image: Image) -> UUID:

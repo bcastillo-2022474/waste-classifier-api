@@ -10,7 +10,8 @@ from core.app.waste_item.application.use_cases.create_waste_item import CreateWa
 from core.app.waste_item.application.use_cases.scan_waste_item import ScanWasteItemUseCase
 from core.app.waste_item.domain.entities import Image, WasteItemInfo, WasteItemType
 from core.app.waste_item.application.use_cases.list_all_items import ListAllItemsUseCase
-
+from rest_framework.permissions import AllowAny
+from core.app.waste_item.application.use_cases.get_one_item_by_id import GetOneItemByIdUseCase
 
 class WasteItemApiView(APIView):
     parser_classes = (MultiPartParser,)
@@ -61,8 +62,26 @@ class WasteItemApiView(APIView):
 
 
 
+class WasteItemByIdApiView(APIView):
+    @staticmethod
+    def get(self, request, waste_item_id, *args, **kwargs):
+        ## definicion del repo
+        repository = WasteItemRepositoryImpl()
+        use_case = GetOneItemByIdUseCase(waste_item_repository=repository)
+        try:
+            waste_item = use_case.execute(waste_item_id=waste_item_id)
+            return Response(waste_item)
+        except Exception as e:
+            print(e)
+            status_response, detail = get_error_status_code_from_exception(e)
+            return Response(status=status_response, data=detail)
+         
+
+
+
 class WasteImageScanApiView(APIView):
     parser_classes = (MultiPartParser,)
+    permission_classes = [AllowAny]
 
     @staticmethod
     def post(request, *args, **kwargs):
