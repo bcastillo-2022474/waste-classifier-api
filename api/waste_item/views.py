@@ -74,7 +74,7 @@ class WasteItemByIdApiView(APIView):
         except Exception as e:
             print(e)
             status_response, detail = get_error_status_code_from_exception(e)
-            return Response(status=status_response, data=detail)
+            return Response(status=status_response, data=detail)   
          
 
 

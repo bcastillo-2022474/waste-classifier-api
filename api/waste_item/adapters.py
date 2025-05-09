@@ -2,10 +2,12 @@ import random
 from io import BytesIO
 from os import getenv
 from uuid import uuid4, UUID
+from django.db import models 
 
 from core.app.waste_item.domain.ports import ImageScannerRepository, WasteItemRepository, ImageRepository
 from core.app.waste_item.domain.entities import WasteItemInfo, Image, WasteItem
 from waste_item.models import WasteItem as WasteItemModel
+from core.app.waste_item.application.dto import StatsWasteItem
 import boto3
 
 class ImageScannerRepositoryImpl(ImageScannerRepository):
@@ -35,6 +37,22 @@ class WasteItemRepositoryImpl(WasteItemRepository):
             return item.to_entity() if item else None
         except WasteItemModel.DoesNotExist:
             raise ValueError(f"Waste item with ID {waste_item_id} not found.") 
+    
+    def get_material_count(self, material_waste: str) -> StatsWasteItem:
+        item = (
+            WasteItemModel.objects
+            .filter(material=material_waste)
+            .values('material')
+            .annotate(count=models.Count('material'))
+            .first()
+        )
+        if item is None:
+            raise ValueError(f"No waste items found for material: {material_waste}")
+        return StatsWasteItem(material=item['material'], count=item['count'])
+    
+    def get_all_material_count(self) -> list:
+        items = WasteItemModel.objects.values('material').annotate(count=models.Count('material'))
+        return [StatsWasteItem(material=item['material'], count=item['count']) for item in items]
 
 class ImageRepositoryImpl(ImageRepository):
     def save(self, image: Image) -> UUID:
