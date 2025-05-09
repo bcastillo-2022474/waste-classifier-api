@@ -39,11 +39,17 @@ class WasteItemRepositoryImpl(WasteItemRepository):
             raise ValueError(f"Waste item with ID {waste_item_id} not found.") 
     
     def get_material_count(self, material_waste: str) -> StatsWasteItem:
-        items = WasteItemModel.objects.filter(material=material_waste).values('material').annotate(count=models.Count('material'))
-        if not items:
+        item = (
+            WasteItemModel.objects
+            .filter(material=material_waste)
+            .values('material')
+            .annotate(count=models.Count('material'))
+            .first()
+        )
+        if item is None:
             raise ValueError(f"No waste items found for material: {material_waste}")
-        return StatsWasteItem(material=items[0]['material'], count=items[0]['count'])
-
+        return StatsWasteItem(material=item['material'], count=item['count'])
+    
     def get_all_material_count(self) -> list:
         items = WasteItemModel.objects.values('material').annotate(count=models.Count('material'))
         return [StatsWasteItem(material=item['material'], count=item['count']) for item in items]
