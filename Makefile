@@ -1,7 +1,6 @@
 default: dev
 
 test:
-	rm -rf htmlcov
 	python -m coverage run -m unittest discover core/tests
 	python -m coverage report
 

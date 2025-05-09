@@ -7,7 +7,7 @@ from core.app.user.application.exceptions import UserNotFoundException
 
 class UserRepositoryImplements(UserRepository):
 
-  def get_self_user(self, user_id: UUID) -> User:
+  def get(self, user_id: UUID) -> User:
     user = UserModel.objects.filter(id=user_id).first()
     return user.to_entity() if user else None
   
