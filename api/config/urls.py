@@ -28,6 +28,7 @@ urlpatterns += [
             [
                 path("", include("authentication.urls")),
                 path("", include("waste_item.urls")),
+                path("", include("user.urls")),
             ]
         ),
     ),

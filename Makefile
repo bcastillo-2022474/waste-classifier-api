@@ -1,7 +1,6 @@
 default: dev
 
 test:
-	rm -rf htmlcov
 	python -m coverage run -m unittest discover core/tests
 	python -m coverage report
 
@@ -16,3 +15,6 @@ makemigrations:
 
 createsuperuser:
 	dotenv -f .env run -- python api/manage.py createsuperuser
+
+venv:
+	.venv/Scripts/Activate.ps1
