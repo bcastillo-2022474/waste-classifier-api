@@ -4,9 +4,11 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 import json
 
+from api.authentication.adapters import UserRepositoryImplements
 from api.utils import get_error_status_code_from_exception
 from api.waste_item.adapters import ImageScannerRepositoryImpl, WasteItemRepositoryImpl, ImageRepositoryImpl
 from core.app.waste_item.application.use_cases.create_waste_item import CreateWasteItemUseCase
+from core.app.waste_item.application.use_cases.get_frequency_recycling import GetFrequencyRecyclingUseCase
 from core.app.waste_item.application.use_cases.scan_waste_item import ScanWasteItemUseCase
 from core.app.waste_item.domain.entities import Image, WasteItemInfo, WasteItemType
 from core.app.waste_item.application.use_cases.list_all_items import ListAllItemsUseCase
@@ -101,3 +103,22 @@ class WasteImageScanApiView(APIView):
             status_response, detail = get_error_status_code_from_exception(e)
             return Response(status=status_response, data=detail)
 
+
+class WasteItemRecyclingFrequencyStats(APIView):
+    @staticmethod
+    def get(self, request, *args, **kwargs):
+        use_case = GetFrequencyRecyclingUseCase(
+            waste_item_repository=WasteItemRepositoryImpl(),
+            user_repository=UserRepositoryImplements()
+        )
+        try:
+            waste_item = use_case.execute(
+                user_id=request.user.id,
+                start_date=request.GET.get("start_date"),
+                end_date=request.GET.get("end_date")
+            )
+            return Response(waste_item)
+        except Exception as e:
+            print(e)
+            status_response, detail = get_error_status_code_from_exception(e)
+            return Response(status=status_response, data=detail)
