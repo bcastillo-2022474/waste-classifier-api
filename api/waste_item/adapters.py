@@ -1,9 +1,11 @@
 import random
+from datetime import datetime
 from io import BytesIO
 from os import getenv
 from uuid import uuid4, UUID
 from django.db import models 
 
+from core.app.waste_item.application.stats_material_dto import StatsWasteItem
 from core.app.waste_item.domain.ports import ImageScannerRepository, WasteItemRepository, ImageRepository
 from core.app.waste_item.domain.entities import WasteItemInfo, Image, WasteItem
 from waste_item.models import WasteItem as WasteItemModel
@@ -30,7 +32,21 @@ class WasteItemRepositoryImpl(WasteItemRepository):
     
     def list(self):
         return [item.to_entity() for item in WasteItemModel.objects.all()]
-    
+
+    def get_frequency_recycling(self, user_id: UUID, start_date: datetime, end_date: datetime):
+        items = (
+            WasteItemModel.objects
+            .filter(user_id=user_id, type="RECYCLABLE", created_at__date__range=[start_date, end_date])
+            .extra({'week': "EXTRACT(week FROM created_at)"})
+            .values('week')
+            .annotate(count=Count('id'))
+            .order_by('week')
+        )
+
+        # Puedes adaptar esto según lo que necesite StatsWasteItem
+        result = [{"week": int(item["week"]), "count": item["count"]} for item in items]
+        return result
+
     def get(self, waste_item_id: str) -> WasteItem:
         try:
             item = WasteItemModel.objects.filter(id=waste_item_id).first()
