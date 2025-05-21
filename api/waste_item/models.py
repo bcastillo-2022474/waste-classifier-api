@@ -1,5 +1,5 @@
 from django.db import models
-from core.app.waste_item.domain.entities import WasteItem as WasteItemEntity
+from core.app.waste_item.domain.entities import WasteItem as WasteItemEntity, WasteItemType
 # Create your models here.
 
 WasteItemTypes = [
@@ -43,7 +43,7 @@ class WasteItem(models.Model):
             user_id=self.user.id,
             image=self.image,
             material=self.material,
-            type=types[self.type.name],
+            type=WasteItemType(self.type),  # <-- convierte a Enum si es necesario
             approximate_weight=self.approximate_weight,
             created_at=self.created_at,
             updated_at=self.updated_at,
