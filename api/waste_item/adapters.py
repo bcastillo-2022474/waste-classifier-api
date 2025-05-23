@@ -44,12 +44,14 @@ class WasteItemRepositoryImpl(WasteItemRepository):
             .filter(material=material_waste)
             .values('material')
             .annotate(count=models.Count('material'))
+            .order_by('-count') 
             .first()
         )
         if item is None:
             raise ValueError(f"No waste items found for material: {material_waste}")
         return StatsWasteItem(material=item['material'], count=item['count'])
-    
+
+        
     def get_all_material_count(self) -> list:
         items = WasteItemModel.objects.values('material').annotate(count=models.Count('material'))
         return [StatsWasteItem(material=item['material'], count=item['count']) for item in items]
