@@ -2,6 +2,7 @@ from django.core.files.uploadedfile import UploadedFile
 from rest_framework.parsers import MultiPartParser
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework.pagination import PageNumberPagination
 import json
 
 from api.utils import get_error_status_code_from_exception
@@ -50,13 +51,14 @@ class WasteItemApiView(APIView):
         
     @staticmethod
     def get(request, *args, **kwargs):
-        ## definicion del repo
         repository = WasteItemRepositoryImpl()
         use_case = ListAllItemsUseCase(waste_item_repository=repository)
-        ## logica
         try:
             waste_items = use_case.execute()
-            return Response(waste_items)
+            paginator = PageNumberPagination()
+            paginator.page_size = int(request.GET.get("page_size", 10))
+            result_page = paginator.paginate_queryset(waste_items, request)
+            return paginator.get_paginated_response(result_page)
         except Exception as e:
             print(e)
             status_response, detail = get_error_status_code_from_exception(e)
@@ -79,9 +81,7 @@ class WasteItemByIdApiView(APIView):
             return Response(status=status_response, data=detail)   
         
 class StatsAllMaterialWaste(APIView):
-    @staticmethod
     def get(self, request, *args, **kwargs):
-        ## definicion del repo
         repository = WasteItemRepositoryImpl()
         use_case = GetAllRecyclingMaterialUseCase(waste_item_repository=repository)
         try:
@@ -93,9 +93,7 @@ class StatsAllMaterialWaste(APIView):
             return Response(status=status_response, data=detail)
 
 class StatsMaterialWaste(APIView):
-    @staticmethod
     def get(self, request, material_waste, *args, **kwargs):
-        ## definicion del repo
         repository = WasteItemRepositoryImpl()
         use_case = CountMaterialAmountUseCase(waste_item_repository=repository)
         try:
