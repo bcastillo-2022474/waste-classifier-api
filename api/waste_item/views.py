@@ -60,7 +60,6 @@ class WasteItemApiView(APIView):
             result_page = paginator.paginate_queryset(waste_items, request)
             return paginator.get_paginated_response(result_page)
         except Exception as e:
-            print(e)
             status_response, detail = get_error_status_code_from_exception(e)
             return Response(status=status_response, data=detail)
 
@@ -76,7 +75,6 @@ class WasteItemByIdApiView(APIView):
             waste_item = use_case.execute(waste_item_id=waste_item_id)
             return Response(waste_item)
         except Exception as e:
-            print(e)
             status_response, detail = get_error_status_code_from_exception(e)
             return Response(status=status_response, data=detail)   
         
@@ -88,7 +86,6 @@ class StatsAllMaterialWaste(APIView):
             waste_items = use_case.execute()
             return Response(waste_items)
         except Exception as e:
-            print(e)
             status_response, detail = get_error_status_code_from_exception(e)
             return Response(status=status_response, data=detail)
 
@@ -100,7 +97,6 @@ class StatsMaterialWaste(APIView):
             waste_items = use_case.execute(material_waste=material_waste)
             return Response(waste_items)
         except Exception as e:
-            print(e)
             status_response, detail = get_error_status_code_from_exception(e)
             return Response(status=status_response, data=detail)
 
