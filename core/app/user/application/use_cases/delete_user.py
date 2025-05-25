@@ -12,7 +12,7 @@ class DeleteUserUseCase:
         except ValueError:
             raise ValueError(f"{user_id} is not a valid UUID")
 
-        user = self.user_repository.find_by_id(uuid_obj)
+        user = self.user_repository.get_by_id(uuid_obj)
         if user is None:
             raise UserNotFoundException(f"User with id {user_id} not found")
         

@@ -19,6 +19,9 @@ class LoginView(TokenObtainPairView):
 
 
 class SignupView(APIView):
+    authentication_classes = []
+    permission_classes = []
+
     @staticmethod
     def post(request, *args, **kwargs):
         use_case = SignupUseCase(user_repository=UserRepositoryImplements())
