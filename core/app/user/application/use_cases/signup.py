@@ -9,8 +9,8 @@ class SignupUseCase:
         self.user_repository = user_repository
 
     def execute(self, user_dto: UserSignupDto) -> User:
-        foundUser = self.user_repository.get_by_email(email=user_dto.email)
-        if foundUser:
+        found_user = self.user_repository.get_by_email(email=user_dto.email)
+        if found_user:
             raise UserAlreadyExistsException(f"User with email {user_dto.email} already exists")
 
         user = self.user_repository.create(user_dto=user_dto)
