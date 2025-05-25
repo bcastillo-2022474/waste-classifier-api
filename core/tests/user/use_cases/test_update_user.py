@@ -31,7 +31,7 @@ class TestUpdateUserUseCase(unittest.TestCase):
         self.user_repository.get.return_value = self.user
         self.user_repository.update.return_value = self.user
 
-        user_data = {"first_name": "Jane", "last_name": "Smith", "email": "jane@example.com"}
+        user_data = UpdateUserDTO(first_name="Jane", last_name="Smith", email="jane@example.com")
         updated_user = self.use_case.execute(self.user_id, user_data)
 
         self.user_repository.get.assert_called_once_with(self.user_id)
@@ -40,14 +40,13 @@ class TestUpdateUserUseCase(unittest.TestCase):
 
     def test_update_user_not_found(self):
         self.user_repository.get.return_value = None
-        user_data = {"first_name": "Jane"}
+        user_data = UpdateUserDTO(first_name="Jane")
 
         with self.assertRaises(UserNotFoundException):
             self.use_case.execute(self.user_id, user_data)
 
     def test_update_user_invalid_data(self):
         self.user_repository.get.return_value = self.user
-        user_data = {"email": "not-an-email"}
-
+        # Esto lanzará un error de validación de pydantic
         with self.assertRaises(ValueError):
-            self.use_case.execute(self.user_id, user_data)
+            UpdateUserDTO(email="not-an-email")
