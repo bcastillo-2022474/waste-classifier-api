@@ -64,11 +64,19 @@ class WasteItemApiView(APIView):
             return Response(status=status_response, data=detail)
 
 
+class WasteExcelApiView(APIView):
+    def get(self, request, *args, **kwargs):
+        try:
+            user_id = request.user.id
+            repository = WasteItemRepositoryImpl()
+            response = repository.getExcel(user_id)
+            return response
+        except Exception as e:
+            status_response, detail = get_error_status_code_from_exception(e)
+            return Response(status=status_response, data=detail)
 
 class WasteItemByIdApiView(APIView):
-    @staticmethod
     def get(self, request, waste_item_id, *args, **kwargs):
-        ## definicion del repo
         repository = WasteItemRepositoryImpl()
         use_case = GetOneItemByIdUseCase(waste_item_repository=repository)
         try:

@@ -3,6 +3,9 @@ from io import BytesIO
 from os import getenv
 from uuid import uuid4, UUID
 from django.db import models 
+from openpyxl import Workbook
+from django.http import HttpResponse
+import datetime
 
 from core.app.waste_item.domain.ports import ImageScannerRepository, WasteItemRepository, ImageRepository
 from core.app.waste_item.domain.entities import WasteItemInfo, Image, WasteItem
@@ -28,7 +31,7 @@ class WasteItemRepositoryImpl(WasteItemRepository):
         item.save(force_insert=True)
         return item.to_entity()
     
-    def list(self):
+    def list_item(self):
         return [item.to_entity() for item in WasteItemModel.objects.all()]
     
     def get(self, waste_item_id: str) -> WasteItem:
@@ -55,6 +58,45 @@ class WasteItemRepositoryImpl(WasteItemRepository):
     def get_all_material_count(self) -> list:
         items = WasteItemModel.objects.values('material').annotate(count=models.Count('material'))
         return [StatsWasteItem(material=item['material'], count=item['count']) for item in items]
+
+    def list_by_user_id(self, user_id: str) -> list[WasteItem]:
+        items = WasteItemModel.objects.filter(user_id=user_id)
+        return [item.to_entity() for item in items]
+    
+    def getExcel(self, user_id: str):
+        items = self.list_by_user_id(user_id)
+        wb = Workbook()
+        ws = wb.active
+        ws.title = "Waste Items"
+
+        if not items:
+            ws.append(["No data"])
+        else:
+            exclude = {"image", "user_id", "created_by_id"}
+            headers = [h for h in items[0].__dict__.keys() if h not in exclude and not h.startswith("_")]
+            ws.append(headers)
+            for item in items:
+                row = []
+                for h in headers:
+                    value = getattr(item, h, None)
+                    if isinstance(value, UUID):
+                        value = str(value)
+                    elif hasattr(value, "name"):
+                        value = value.name
+                    elif isinstance(value, datetime.datetime):
+                        if value.tzinfo is not None:
+                            value = value.replace(tzinfo=None)
+                        value = value.strftime("%Y-%m-%d %H:%M:%S")
+                    elif value is None:
+                        value = ""
+                    row.append(value)
+                ws.append(row)
+
+        response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+        response['Content-Disposition'] = f'attachment; filename=items_usuario_.xlsx'
+        wb.save(response)
+        return response
+
 
 class ImageRepositoryImpl(ImageRepository):
     def save(self, image: Image) -> UUID:

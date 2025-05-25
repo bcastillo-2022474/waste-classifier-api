@@ -6,5 +6,5 @@ class ListAllItemsUseCase:
         self.waste_item_repository = waste_item_repository
 
     def execute(self):
-        return self.waste_item_repository.list()
+        return self.waste_item_repository.list_item()
     
