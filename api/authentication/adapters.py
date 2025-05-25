@@ -8,14 +8,14 @@ from core.app.user.application.exceptions import UserNotFoundException
 
 
 class UserRepositoryImplements(UserRepository):
-    def create(self, user: UserSignupDto) -> User:
+    def create(self, user_dto: UserSignupDto) -> User:
         user = UserModel(
-            email=user.email,
-            first_name=user.first_name,
-            last_name=user.last_name,
+            email=user_dto.email,
+            first_name=user_dto.first_name,
+            last_name=user_dto.last_name,
         )
         user.id = uuid4()
-        user.set_password(user.password)
+        user.set_password(user_dto.password)
         user.save()
         return user.to_entity()
 
@@ -39,4 +39,5 @@ class UserRepositoryImplements(UserRepository):
         user = UserModel.objects.filter(id=user_id).first()
         if not user:
             raise UserNotFoundException(f"User with id {user_id} not found")
+
         user.delete()

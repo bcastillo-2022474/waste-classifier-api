@@ -1,6 +1,7 @@
 from rest_framework_simplejwt.views import TokenObtainPairView
 
 from core.app.user.application.use_cases.signup import SignupUseCase
+from core.app.user.domain.dtos import UserSignupDto
 from .adapters import UserRepositoryImplements
 from .serializers import CustomTokenObtainPairSerializer
 
@@ -24,13 +25,14 @@ class SignupView(APIView):
 
         try:
             response = use_case.execute(
-                first_name=request.data.get("first_name"),
-                last_name=request.data.get("last_name"),
-                email=request.data.get("email"),
-                password=request.data.get("password")
+                UserSignupDto(
+                    first_name=request.data.get("first_name"),
+                    last_name=request.data.get("last_name"),
+                    email=request.data.get("email"),
+                    password=request.data.get("password")
+                )
             )
-
-            return Response(response)
+            return Response(response, status=status.HTTP_201_CREATED)
         except Exception as e:
             status_response, detail = get_error_status_code_from_exception(e)
             return Response(status=status_response, data=detail)
