@@ -1,5 +1,6 @@
 from uuid import UUID
 
+from core.app.user.application.use_cases.dto import ChangePasswordDTO
 from core.app.user.domain.entities import User
 from authentication.models import User as UserModel
 from core.app.user.domain.ports import UserRepository
@@ -22,9 +23,11 @@ class UserRepositoryImplements(UserRepository):
       user_model.save()
       return user_model.to_entity()
   
-  def update_password(self, user_id: UUID, new_password: str) -> None:
+  def update_password(self, user_id: UUID, passwords: ChangePasswordDTO) -> None:
       user_model = UserModel.objects.filter(id=user_id).first()
       if not user_model:
           raise UserNotFoundException("User not found with id: {user_id}")
-      user_model.set_password(new_password)
+      if not user_model.check_password(passwords.current_password):
+          raise UserNotFoundException("Current password does not match")
+      user_model.set_password(passwords.new_password)
       user_model.save()

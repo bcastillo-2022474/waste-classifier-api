@@ -1,4 +1,4 @@
-from core.app.user.application.use_cases.dto import UpdateUserDTO
+from core.app.user.application.use_cases.dto import ChangePasswordDTO, UpdateUserDTO
 from user.adapters import UserRepositoryImplements
 from core.app.user.application.use_cases.get_self_user import GetSelfUserUseCase
 from core.app.user.application.use_cases.delete_user import DeleteUserUseCase
@@ -63,10 +63,10 @@ class UserAPIView(APIView):
         use_case = ChangePasswordUseCase(user_repository=repository)
         try:
             user_id = request.user.id
-            new_password = request.data.get("new_password")
-            if not new_password:
-                return Response("new_password is required", status=400)
-            use_case.execute(user_id, new_password)
+            use_case.execute(user_id, ChangePasswordDTO(
+                current_password=request.data.get("current_password"),
+                new_password=request.data.get("new_password")
+            ))
             return Response("Password updated successfully", status=200)
         except Exception as e:
             status_response, detail = get_error_status_code_from_exception(e)
