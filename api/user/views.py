@@ -44,3 +44,16 @@ class UserAPIView(APIView):
         except Exception as e:
             status_response, detail = get_error_status_code_from_exception(e)
             return Response(data={"error": detail}, status=status_response)
+
+class UserUpdateByIdAPIView(APIView):
+    @staticmethod
+    def put(request, user_id, *args, **kwargs):
+        repository = UserRepositoryImplements()
+        use_case = UpdateUserUseCase(user_repository=repository)
+        try:
+            user_data = request.data
+            updated_user = use_case.execute(user_id, user_data)
+            return Response({"user": updated_user}, status=200)
+        except Exception as e:
+            status_response, detail = get_error_status_code_from_exception(e)
+            return Response(data={"error": detail}, status=status_response)

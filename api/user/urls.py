@@ -1,7 +1,8 @@
 from django.urls import path
-from .views import UserAPIView
+from .views import UserAPIView, UserUpdateByIdAPIView
 
 urlpatterns = [
     path("user/get-self-user", UserAPIView.as_view(), name="get-self-user"),
-    path("user/update-self-user", UserAPIView.as_view(), name="update-user")
+    path("user/update", UserAPIView.as_view(), name="update-user"),
+    path("user/update/<uuid:user_id>", UserUpdateByIdAPIView.as_view(), name="update-user-by-id"),
 ]
