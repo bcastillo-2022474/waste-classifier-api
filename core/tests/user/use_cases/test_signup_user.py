@@ -1,7 +1,7 @@
 import unittest
 from unittest.mock import Mock
 
-from core.app.user.application.exceptions import UserAlreadyExists, UnableToCreateUser
+from core.app.user.application.exceptions import UserAlreadyExistsException, UnableToCreateUserException
 from core.app.user.application.use_cases.signup import SignupUseCase
 from core.app.user.domain.dtos import UserSignupDto
 from core.app.user.domain.ports import UserRepository
@@ -38,7 +38,7 @@ class TestSignupUserUseCase(unittest.TestCase):
         use_case = SignupUseCase(user_repository=self._user_repository)
 
         # Act
-        with self.assertRaises(UserAlreadyExists):
+        with self.assertRaises(UserAlreadyExistsException):
             use_case.execute(UserSignupDto(
                 first_name="John",
                 last_name="Doe",
@@ -76,7 +76,7 @@ class TestSignupUserUseCase(unittest.TestCase):
         use_case = SignupUseCase(user_repository=self._user_repository)
 
         # Act
-        with self.assertRaises(UnableToCreateUser):
+        with self.assertRaises(UnableToCreateUserException):
             use_case.execute(UserSignupDto(
                 first_name="John",
                 last_name="Doe",

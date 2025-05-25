@@ -4,13 +4,13 @@ class UserNotFoundException(Exception):
     """
     pass
 
-class UserAlreadyExists(Exception):
+class UserAlreadyExistsException(Exception):
     """
     Error when the user already exists
     """
     pass
 
-class UnableToCreateUser(Exception):
+class UnableToCreateUserException(Exception):
     """
     Error when the user is not created
     """
