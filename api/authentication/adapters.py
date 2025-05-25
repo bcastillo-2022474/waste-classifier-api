@@ -1,27 +1,34 @@
 from uuid import uuid4, UUID
 
+from core.app.user.domain.dtos import UserSignupDto
 from core.app.user.domain.entities import User
 from authentication.models import User as UserModel
 from core.app.user.domain.ports import UserRepository
 from core.app.user.application.exceptions import UserNotFoundException
 
-class UserRepositoryImplements(UserRepository): 
-    
-    def find_by_id(self, user_id: UUID) -> User:
-        user = UserModel.objects.filter(id=user_id).first()
-        return user.to_entity() if user else None
-    
+
+class UserRepositoryImplements(UserRepository):
+    def create(self, user: UserSignupDto) -> User:
+        user = UserModel(
+            email=user.email,
+            first_name=user.first_name,
+            last_name=user.last_name,
+        )
+        user.id = uuid4()
+        user.set_password(user.password)
+        user.save()
+        return user.to_entity()
+
     def list(self):
         return [user.to_entity() for user in UserModel.objects.all()]
-    
+
     def get(self, user_id: UUID) -> User:
-        return UserModel.objects.get(id=user_id).to_entity()
-    
-    def get_by_username(self, username: str) -> User:
-        return UserModel.objects.get(username=username).to_entity()
+        user = UserModel.objects.find(id=user_id).first();
+        return user.to_entity() if user else None
 
     def get_by_email(self, email: str) -> User:
-        return UserModel.objects.get(email=email).to_entity()
+        user = UserModel.objects.filter(email=email).first()
+        return user.to_entity() if user else None
 
     def update(self, user: User) -> User:
         user = UserModel.from_entity(entity=user)
@@ -33,13 +40,3 @@ class UserRepositoryImplements(UserRepository):
         if not user:
             raise UserNotFoundException(f"User with id {user_id} not found")
         user.delete()
-
-    def exists(self, user_id: UUID) -> bool:
-        return UserModel.objects.filter(id=user_id).exists()
-
-    def exists_by_username(self, username: str) -> bool:
-        return UserModel.objects.filter(username=username).exists()
-
-    def exists_by_email(self, email: str) -> bool:
-        return UserModel.objects.filter(email=email).exists()
-

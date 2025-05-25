@@ -1,4 +1,4 @@
-from api.user.adapters import UserRepositoryImplements
+from api.authentication.adapters import UserRepositoryImplements
 from core.app.user.application.use_cases.get_self_user import GetSelfUserUseCase
 from core.app.user.application.use_cases.delete_user import DeleteUserUseCase
 
