@@ -19,13 +19,12 @@ class UpdateUserUseCase:
         except ValidationError as e:
             raise ValueError(e.errors())
 
-        # Usar setters de la entidad User (deben existir en la clase User)
         if dto.first_name is not None:
-            user.set_first_name(dto.first_name)
+            user.first_name = dto.first_name
         if dto.last_name is not None:
-            user.set_last_name(dto.last_name)
+            user.last_name = dto.last_name
         if dto.email is not None:
-            user.set_email(dto.email)
+            user.email = dto.email
 
         updated_user = self.user_repository.update(user)
         return updated_user
