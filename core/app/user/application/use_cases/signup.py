@@ -1,5 +1,3 @@
-from uuid import UUID
-
 from core.app.user.domain.dtos import UserSignupDto
 from core.app.user.domain.entities import User
 from core.app.user.domain.ports import UserRepository

@@ -23,7 +23,7 @@ class UserRepositoryImplements(UserRepository):
         return [user.to_entity() for user in UserModel.objects.all()]
 
     def get(self, user_id: UUID) -> User:
-        user = UserModel.objects.find(id=user_id).first();
+        user = UserModel.objects.filter(id=user_id).first()
         return user.to_entity() if user else None
 
     def get_by_email(self, email: str) -> User:
