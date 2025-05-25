@@ -13,6 +13,7 @@ class UserRepositoryImplements(UserRepository):
             email=user_dto.email,
             first_name=user_dto.first_name,
             last_name=user_dto.last_name,
+            is_active=True,
         )
         user.id = uuid4()
         user.set_password(user_dto.password)
@@ -20,15 +21,15 @@ class UserRepositoryImplements(UserRepository):
         return user.to_entity()
 
     def list(self):
-        return [user.to_entity() for user in UserModel.objects.all()]
+        return [user.to_entity() for user in UserModel.objects.filter(is_active=True)]
 
     def get(self, user_id: UUID) -> User:
         user = UserModel.objects.filter(id=user_id).first()
-        return user.to_entity() if user else None
+        return user.to_entity() if (user and user.is_active) else None
 
     def get_by_email(self, email: str) -> User:
         user = UserModel.objects.filter(email=email).first()
-        return user.to_entity() if user else None
+        return user.to_entity() if (user and user.is_active) else None
 
     def update(self, user: User) -> User:
         user = UserModel.from_entity(entity=user)
@@ -39,5 +40,9 @@ class UserRepositoryImplements(UserRepository):
         user = UserModel.objects.filter(id=user_id).first()
         if not user:
             raise UserNotFoundException(f"User with id {user_id} not found")
+        user.is_active = False
+        user.save()
 
-        user.delete()
+    def get_by_id(self, user_id: UUID) -> User:
+        user = UserModel.objects.filter(id=user_id).first()
+        return user.to_entity() if (user and user.is_active) else None
