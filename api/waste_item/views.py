@@ -4,7 +4,9 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.pagination import PageNumberPagination
 import json
+import os
 
+from ai_recognition_service.main import OpenAITrashClassifierService
 from api.utils import get_error_status_code_from_exception
 from api.waste_item.adapters import ImageScannerRepositoryImpl, WasteItemRepositoryImpl, ImageRepositoryImpl
 from core.app.waste_item.application.use_cases.create_waste_item import CreateWasteItemUseCase
@@ -116,7 +118,11 @@ class WasteImageScanApiView(APIView):
 
     @staticmethod
     def post(request, *args, **kwargs):
-        repository = ImageScannerRepositoryImpl()
+        repository = ImageScannerRepositoryImpl(
+            trash_classifier_service=OpenAITrashClassifierService(
+                api_key=os.getenv("OPENAI_API_KEY"),
+            )
+        )
         use_case = ScanWasteItemUseCase(repository)
 
         try:
