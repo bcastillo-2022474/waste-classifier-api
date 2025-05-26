@@ -17,6 +17,7 @@ from rest_framework.permissions import AllowAny
 from core.app.waste_item.application.use_cases.get_one_item_by_id import GetOneItemByIdUseCase
 from core.app.waste_item.application.use_cases.get_all_recycling_material import GetAllRecyclingMaterialUseCase
 from core.app.waste_item.application.use_cases.get_objets_recycling_material import CountMaterialAmountUseCase
+from core.app.waste_item.application.use_cases.get_excel_user_id import GetExcelByUserIdUseCase
 
 class WasteItemApiView(APIView):
     parser_classes = (MultiPartParser,)
@@ -66,11 +67,19 @@ class WasteItemApiView(APIView):
             return Response(status=status_response, data=detail)
 
 
+class WasteExcelApiView(APIView):
+    def get(self, request, *args, **kwargs):
+        try:
+            user_id = request.user.id
+            use_case = GetExcelByUserIdUseCase(WasteItemRepositoryImpl())
+            response = use_case.execute(user_id)
+            return response
+        except Exception as e:
+            status_response, detail = get_error_status_code_from_exception(e)
+            return Response(status=status_response, data=detail)
 
 class WasteItemByIdApiView(APIView):
-    @staticmethod
     def get(self, request, waste_item_id, *args, **kwargs):
-        ## definicion del repo
         repository = WasteItemRepositoryImpl()
         use_case = GetOneItemByIdUseCase(waste_item_repository=repository)
         try:

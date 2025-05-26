@@ -4,7 +4,7 @@ from pydantic import ValidationError as PydanticValidationError
 from rest_framework import status
 from core.app.user.application.exceptions import UserNotFoundException, UnableToCreateUserException, UserAlreadyExistsException
 from core.app.waste_item.application.exceptions import UnableToProcessImageException, UnableToSaveImageException, \
-    EmptyImageException, WasteItemNotFoundException
+    EmptyImageException, WasteItemNotFoundException, UserNotFoundException
 
 errors = [
     (DjangoValidationError, status.HTTP_400_BAD_REQUEST),
@@ -16,6 +16,7 @@ errors = [
     (UnableToCreateUserException, status.HTTP_400_BAD_REQUEST),
     (UserAlreadyExistsException, status.HTTP_409_CONFLICT),  # Conflict
     (WasteItemNotFoundException, status.HTTP_404_NOT_FOUND),
+    (UserNotFoundException, status.HTTP_404_NOT_FOUND),
 
     # THIS 2 MUST BE LAST ALWAYS
     (ValueError, status.HTTP_400_BAD_REQUEST),
