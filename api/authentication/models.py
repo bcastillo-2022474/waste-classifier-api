@@ -4,7 +4,7 @@ from django.contrib.auth.base_user import AbstractBaseUser, BaseUserManager
 from django.contrib.auth.models import PermissionsMixin
 from django.utils.translation import gettext_lazy as _
 from django.utils import timezone
-
+from core.app.user.domain.entities import User as UserEntity
 
 # Create your models here.
 
@@ -58,9 +58,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     USERNAME_FIELD = "email"
     EMAIL_FIELD = "email"
 
-    def to_entity(self):
-        from core.app.user.domain.entities import User as UserEntity
-
+    def to_entity(self) -> UserEntity:
         user = UserEntity(
             id=self.id,
             first_name=self.first_name,
@@ -71,3 +69,14 @@ class User(AbstractBaseUser, PermissionsMixin):
         )   
 
         return user
+
+    @staticmethod
+    def from_entity(entity: UserEntity) -> "User":
+        return User(
+            id=entity.id,
+            first_name=entity.first_name,
+            last_name=entity.last_name,
+            email=entity.email,
+            is_active=entity.is_active,
+            date_joined=entity.date_joined
+        )
