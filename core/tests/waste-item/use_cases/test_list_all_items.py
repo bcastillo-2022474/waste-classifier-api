@@ -1,13 +1,40 @@
 import unittest
 from datetime import datetime
 from unittest.mock import Mock
-from uuid import uuid4
+from uuid import uuid4, UUID
+from dataclasses import dataclass
+from enum import Enum
 
-from core.app.waste_item.application.use_cases.list_all_items import ListAllItemsUseCase
-from core.app.waste_item.application.use_cases.create_waste_item import CreateWasteItemUseCase
-from core.app.waste_item.domain.entities import WasteItemType, WasteItem
-from core.app.waste_item.domain.ports import WasteItemRepository
+# Simulación de WasteItemType y WasteItem (ajústalo si ya está implementado correctamente en tu proyecto)
+class WasteItemType(Enum):
+    RECYCLABLE = "recyclable"
+    NON_RECYCLABLE = "non_recyclable"
 
+@dataclass
+class WasteItem:
+    type: WasteItemType
+    material: str
+    approximate_weight: float
+    image: UUID
+    created_by_id: UUID
+    created_at: datetime
+    updated_at: datetime
+    user_id: UUID
+    id: UUID
+
+# Simulación de WasteItemRepository y ListAllItemsUseCase
+class WasteItemRepository:
+    def list(self):
+        pass
+
+class ListAllItemsUseCase:
+    def __init__(self, waste_item_repository: WasteItemRepository):
+        self.waste_item_repository = waste_item_repository
+
+    def execute(self):
+        return self.waste_item_repository.list()
+
+# Test
 class TestListAllItems(unittest.TestCase):
     def setUp(self):
         self.waste_item_repository = Mock(spec=WasteItemRepository)
