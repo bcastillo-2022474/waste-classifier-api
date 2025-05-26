@@ -23,11 +23,7 @@ class UserRepositoryImplements(UserRepository):
       user_model.save()
       return user_model.to_entity()
   
-  def update_password(self, user_id: UUID, passwords: ChangePasswordDTO) -> None:
+  def update_password(self, user_id: UUID, new_password: str) -> None:
       user_model = UserModel.objects.filter(id=user_id).first()
-      if not user_model:
-          raise UserNotFoundException("User not found with id: {user_id}")
-      if not user_model.check_password(passwords.current_password):
-          raise UserNotFoundException("Current password does not match")
-      user_model.set_password(passwords.new_password)
+      user_model.set_password(new_password)
       user_model.save()

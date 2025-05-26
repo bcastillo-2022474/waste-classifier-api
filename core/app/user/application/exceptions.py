@@ -15,3 +15,9 @@ class UnableToCreateUserException(Exception):
     Error when the user is not created
     """
     pass
+
+class PasswordsDoNotMatchException(Exception):
+    """
+    Error when the passwords do not match
+    """
+    
