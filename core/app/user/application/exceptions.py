@@ -16,8 +16,8 @@ class UnableToCreateUserException(Exception):
     """
     pass
 
-class PasswordsDoNotMatchException(Exception):
+class UnauthorizedUserException(Exception):
     """
-    Error when the passwords do not match
+    Error when the user is not authorized to do certain action
     """
-    
+    pass

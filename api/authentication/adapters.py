@@ -4,7 +4,6 @@ from core.app.user.domain.dtos import UserSignupDto
 from core.app.user.domain.entities import User
 from authentication.models import User as UserModel
 from core.app.user.domain.ports import UserRepository
-from core.app.user.application.exceptions import UserNotFoundException
 
 
 class UserRepositoryImplements(UserRepository):
@@ -38,11 +37,18 @@ class UserRepositoryImplements(UserRepository):
 
     def delete(self, user_id: UUID):
         user = UserModel.objects.filter(id=user_id).first()
-        if not user:
-            raise UserNotFoundException(f"User with id {user_id} not found")
         user.is_active = False
         user.save()
 
     def get_by_id(self, user_id: UUID) -> User:
         user = UserModel.objects.filter(id=user_id).first()
         return user.to_entity() if (user and user.is_active) else None
+
+    def update_password(self, user_id: UUID, new_password: str):
+        user = UserModel.objects.filter(id=user_id).first()
+        user.set_password(new_password)
+        user.save()
+
+    def check_password(self, user_id: UUID, current_password: str) -> bool:
+        user = UserModel.objects.filter(id=user_id).first()
+        return user.check_password(current_password)
