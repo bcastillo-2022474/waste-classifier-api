@@ -1,5 +1,5 @@
+from api.authentication.adapters import UserRepositoryImplements
 from core.app.user.application.use_cases.dto import ChangePasswordDTO, UpdateUserDTO
-from user.adapters import UserRepositoryImplements
 from core.app.user.application.use_cases.get_self_user import GetSelfUserUseCase
 from core.app.user.application.use_cases.delete_user import DeleteUserUseCase
 from core.app.user.application.use_cases.update_user import UpdateUserUseCase
@@ -21,8 +21,7 @@ class UserAPIView(APIView):
         repository = UserRepositoryImplements()
         use_case = GetSelfUserUseCase(user_repository=repository)
         try:
-            user_id = str(request.user.id)
-            user = use_case.execute(user_id)
+            user = use_case.execute(user_id=request.user.id)
             return Response(user, status=status.HTTP_200_OK)
         except Exception as e:
             status_response, detail = get_error_status_code_from_exception(e)
@@ -33,12 +32,11 @@ class UserAPIView(APIView):
         repository = UserRepositoryImplements()
         use_case = DeleteUserUseCase(user_repository=repository)
         try:
-            user_id = str(request.user.id)
-            use_case.execute(user_id)
-            return Response({"message": "User deleted successfully"}, status=status.HTTP_204_NO_CONTENT)
+            use_case.execute(user_id=request.user.id)
+            return Response("User deleted successfully", status=status.HTTP_204_NO_CONTENT)
         except Exception as e:
             status_response, detail = get_error_status_code_from_exception(e)
-            return Response(data={"error": detail}, status=status_response)
+            return Response(data=detail, status=status_response)
 
     @staticmethod
     def put(request, *args, **kwargs):
@@ -57,8 +55,9 @@ class UserAPIView(APIView):
             status_response, detail = get_error_status_code_from_exception(e)
             return Response(data=detail, status=status_response)
 
+class UserChangePasswordAPIView(APIView):
     @staticmethod
-    def patch(request, *args, **kwargs):
+    def post(request, *args, **kwargs):
         repository = UserRepositoryImplements()
         use_case = ChangePasswordUseCase(user_repository=repository)
         try:

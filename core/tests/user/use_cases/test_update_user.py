@@ -2,6 +2,7 @@ import unittest
 from unittest.mock import Mock
 from uuid import uuid4
 from datetime import datetime
+from pydantic import ValidationError
 
 from core.app.user.application.use_cases.update_user import UpdateUserUseCase
 from core.app.user.application.exceptions import UserNotFoundException
@@ -27,26 +28,83 @@ class TestUpdateUserUseCase(unittest.TestCase):
             created_by_id=None
         )
 
-    def test_update_user_success(self):
+    def test_update_user_success_all_fields(self):
+        # Arrange
         self.user_repository.get.return_value = self.user
         self.user_repository.update.return_value = self.user
+        user_data = UpdateUserDTO(
+            first_name="Jane",
+            last_name="Smith",
+            email="jane@example.com"
+        )
 
-        user_data = UpdateUserDTO(first_name="Jane", last_name="Smith", email="jane@example.com")
+        # Act
         updated_user = self.use_case.execute(self.user_id, user_data)
 
+        # Assert
         self.user_repository.get.assert_called_once_with(self.user_id)
-        self.user_repository.update.assert_called_once()
+        self.user_repository.update.assert_called_once_with(self.user)
         self.assertEqual(updated_user, self.user)
 
+    def test_update_user_success_partial_fields(self):
+        # Arrange
+        self.user_repository.get.return_value = self.user
+        self.user_repository.update.return_value = self.user
+        user_data = UpdateUserDTO(first_name="Jane")  # Only updating first name
+
+        # Act
+        updated_user = self.use_case.execute(self.user_id, user_data)
+
+        # Assert
+        self.user_repository.get.assert_called_once_with(self.user_id)
+        self.user_repository.update.assert_called_once_with(self.user)
+        self.assertEqual(updated_user, self.user)
     def test_update_user_not_found(self):
+        # Arrange
         self.user_repository.get.return_value = None
         user_data = UpdateUserDTO(first_name="Jane")
 
+        # Act & Assert
         with self.assertRaises(UserNotFoundException):
             self.use_case.execute(self.user_id, user_data)
 
-    def test_update_user_invalid_data(self):
-        self.user_repository.get.return_value = self.user
-        # Esto lanzará un error de validación de pydantic
-        with self.assertRaises(ValueError):
+        # Assert
+        self.user_repository.get.assert_called_once_with(self.user_id)
+        self.user_repository.update.assert_not_called()
+
+    def test_update_user_invalid_email(self):
+        # Arrange & Act & Assert
+        with self.assertRaises(ValidationError):
             UpdateUserDTO(email="not-an-email")
+
+        # Assert repository methods are not called since DTO creation failed
+        self.user_repository.get.assert_not_called()
+        self.user_repository.update.assert_not_called()
+
+    def test_update_user_empty_dto(self):
+        # Arrange
+        self.user_repository.get.return_value = self.user
+        self.user_repository.update.return_value = self.user
+        user_data = UpdateUserDTO()  # No fields to update
+
+        # Act
+        updated_user = self.use_case.execute(self.user_id, user_data)
+
+        # Assert
+        self.user_repository.get.assert_called_once_with(self.user_id)
+        self.user_repository.update.assert_called_once_with(self.user)
+        self.assertEqual(updated_user, self.user)
+
+    def test_update_user_repository_update_fails(self):
+        # Arrange
+        self.user_repository.get.return_value = self.user
+        self.user_repository.update.return_value = None  # Simulate update failure
+        user_data = UpdateUserDTO(first_name="Jane")
+
+        # Act
+        updated_user = self.use_case.execute(self.user_id, user_data)
+
+        # Assert
+        self.user_repository.get.assert_called_once_with(self.user_id)
+        self.user_repository.update.assert_called_once_with(self.user)
+        self.assertIsNone(updated_user)
