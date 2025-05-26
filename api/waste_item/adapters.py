@@ -63,37 +63,42 @@ class WasteItemRepositoryImpl(WasteItemRepository):
         items = WasteItemModel.objects.filter(user_id=user_id)
         return [item.to_entity() for item in items]
     
-    def getExcel(self, user_id: str):
-        items = self.list_by_user_id(user_id)
+    
+    def get_excel(self, user_id: str) -> HttpResponse:
+        items = WasteItemModel.objects.filter(user_id=user_id)
         wb = Workbook()
         ws = wb.active
         ws.title = "Waste Items"
 
         if not items:
-            ws.append(["No data"])
-        else:
-            exclude = {"image", "user_id", "created_by_id"}
-            headers = [h for h in items[0].__dict__.keys() if h not in exclude and not h.startswith("_")]
-            ws.append(headers)
-            for item in items:
-                row = []
-                for h in headers:
-                    value = getattr(item, h, None)
-                    if isinstance(value, UUID):
-                        value = str(value)
-                    elif hasattr(value, "name"):
-                        value = value.name
-                    elif isinstance(value, datetime.datetime):
-                        if value.tzinfo is not None:
-                            value = value.replace(tzinfo=None)
-                        value = value.strftime("%Y-%m-%d %H:%M:%S")
-                    elif value is None:
-                        value = ""
-                    row.append(value)
-                ws.append(row)
+            response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+            response['Content-Disposition'] = 'attachment; filename=items_usuario_.xlsx'
+            wb.save(response)
+            return response
+
+        exclude = {"image", "user_id", "created_by_id"}
+        headers = [f.name for f in WasteItemModel._meta.fields if f.name not in exclude]
+        ws.append(headers)
+
+        for item in items:
+            row = []
+            for h in headers:
+                value = getattr(item, h, None)
+                if isinstance(value, UUID):
+                    value = str(value)
+                elif isinstance(value, datetime.datetime):
+                    if value.tzinfo is not None:
+                        value = value.replace(tzinfo=None)
+                    value = value.strftime("%Y-%m-%d %H:%M:%S")
+                elif value is None:
+                    value = ""
+                elif not isinstance(value, (str, int, float, bool)):
+                    value = str(value)
+                row.append(value)
+            ws.append(row)
 
         response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
-        response['Content-Disposition'] = f'attachment; filename=items_usuario_.xlsx'
+        response['Content-Disposition'] = 'attachment; filename=items_usuario_.xlsx'
         wb.save(response)
         return response
 

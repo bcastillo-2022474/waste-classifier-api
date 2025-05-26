@@ -16,3 +16,7 @@ class WasteItemNotFoundException(Exception):
     """
     Error when the waste item is not found in the repository
     """
+class UserNotFoundException(Exception):
+    """
+    Error when the user is not found in the repository
+    """
