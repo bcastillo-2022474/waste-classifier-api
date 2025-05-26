@@ -21,7 +21,9 @@ dependencies = [
     "boto3 (>=1.36.26,<2.0.0)",
     "awscli (>=1.37.26,<2.0.0)",
     "django-cors-headers (>=4.7.0,<5.0.0)",
-    "openai (>=1.82.0,<2.0.0)"
+    "openai (>=1.82.0,<2.0.0)",
+    "gunicorn (>=23.0.0,<24.0.0)",
+    "dj-database-url (>=2.3.0,<3.0.0)"
 ]
 
 

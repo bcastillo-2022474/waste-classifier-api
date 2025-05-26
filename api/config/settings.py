@@ -13,7 +13,8 @@ from os import getenv
 from pathlib import Path
 from datetime import timedelta
 import sys
-
+import dj_database_url
+import os
 
 # from django.conf.global_settings import AUTH_USER_MODEL
 
@@ -28,17 +29,12 @@ sys.path.append(str(ROOT_DIR))
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-#^zl=e4rt3s**&1zx_8k^$b7v*%f$6(dl%qj_73(8fz@ug-esr'
+SECRET_KEY = os.getenv("SECRET_KEY", 'django-insecure-#^zl=e4rt3s**&1zx_8k^$b7v*%f$6(dl%qj_73(8fz@ug-esr')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.getenv("DEBUG", "True").lower() in ["true", "1", "yes"]
 
-ALLOWED_HOSTS = [
-    "127.0.0.1",
-    "localhost",
-    "10.0.2.2",  # Add this line
-]
-
+ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "*").split(",")
 
 # Application definition
 
@@ -99,6 +95,9 @@ WSGI_APPLICATION = 'config.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
+
+
+# Use environment variables for database configuration
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
@@ -109,6 +108,12 @@ DATABASES = {
         "PORT": getenv("POSTGRES_PORT"),
     }
 }
+
+# On Render (or any platform with DATABASE_URL), override it
+DATABASE_URL = os.getenv("DATABASE_URL")
+if DATABASE_URL:
+    DATABASES["default"] = dj_database_url.parse(DATABASE_URL, conn_max_age=600)
+
 
 REST_FRAMEWORK = {
      "DEFAULT_AUTHENTICATION_CLASSES": [
