@@ -1,4 +1,5 @@
 from core.app.waste_item.domain.ports import WasteItemRepository
+from core.app.waste_item.application.exceptions import UserNotFoundException
 from django.http import HttpResponse
 
 class GetExcelByUserIdUseCase:

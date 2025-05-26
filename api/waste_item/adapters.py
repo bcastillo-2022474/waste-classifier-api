@@ -6,6 +6,8 @@ from django.db import models
 from openpyxl import Workbook
 from django.http import HttpResponse
 import datetime
+from uuid import UUID
+from django.contrib.auth import get_user_model
 
 from core.app.waste_item.domain.ports import ImageScannerRepository, WasteItemRepository, ImageRepository
 from core.app.waste_item.domain.entities import WasteItemInfo, Image, WasteItem
@@ -121,3 +123,7 @@ class ImageRepositoryImpl(ImageRepository):
 
         s3.upload_fileobj(file_like_object, bucket_name, str(image_identifier), ExtraArgs={"ContentType": image.content_type})
         return image_identifier
+
+    def user_exists(self, user_id: str) -> bool:
+        User = get_user_model()
+        return User.objects.filter(id=user_id).exists()
