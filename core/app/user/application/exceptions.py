@@ -15,3 +15,9 @@ class UnableToCreateUserException(Exception):
     Error when the user is not created
     """
     pass
+
+class UnauthorizedUserException(Exception):
+    """
+    Error when the user is not authorized to do certain action
+    """
+    pass
