@@ -10,7 +10,7 @@ from core.app.waste_item.domain.ports import WasteItemRepository
 
 class TestListAllItems(unittest.TestCase):
     def setUp(self):
-        self.waste_item_repository = Mock(sepc=WasteItemRepository)
+        self.waste_item_repository = Mock(spec=WasteItemRepository)
 
         self.use_case = ListAllItemsUseCase(
             waste_item_repository=self.waste_item_repository
