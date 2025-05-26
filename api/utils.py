@@ -2,7 +2,8 @@ from django.core.exceptions import ValidationError as DjangoValidationError
 from django.utils.encoding import force_str
 from pydantic import ValidationError as PydanticValidationError
 from rest_framework import status
-from core.app.user.application.exceptions import UserNotFoundException, UnableToCreateUserException, UserAlreadyExistsException
+from core.app.user.application.exceptions import UserNotFoundException, UnableToCreateUserException, \
+    UserAlreadyExistsException, UnauthorizedUserException
 from core.app.waste_item.application.exceptions import UnableToProcessImageException, UnableToSaveImageException, \
     EmptyImageException, WasteItemNotFoundException
 
@@ -16,6 +17,7 @@ errors = [
     (UnableToCreateUserException, status.HTTP_400_BAD_REQUEST),
     (UserAlreadyExistsException, status.HTTP_409_CONFLICT),  # Conflict
     (WasteItemNotFoundException, status.HTTP_404_NOT_FOUND),
+    (UnauthorizedUserException, status.HTTP_401_UNAUTHORIZED),
 
     # THIS 2 MUST BE LAST ALWAYS
     (ValueError, status.HTTP_400_BAD_REQUEST),
