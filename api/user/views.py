@@ -33,7 +33,7 @@ class UserAPIView(APIView):
         use_case = DeleteUserUseCase(user_repository=repository)
         try:
             use_case.execute(user_id=request.user.id)
-            return Response("User deleted successfully", status=status.HTTP_204_NO_CONTENT)
+            return Response({"message": "User deleted successfully"}, status=status.HTTP_204_NO_CONTENT)
         except Exception as e:
             status_response, detail = get_error_status_code_from_exception(e)
             return Response(data=detail, status=status_response)
@@ -66,7 +66,7 @@ class UserChangePasswordAPIView(APIView):
                 current_password=request.data.get("current_password"),
                 new_password=request.data.get("new_password")
             ))
-            return Response("Password updated successfully", status=200)
+            return Response({"message": "Password updated successfully"}, status=200)
         except Exception as e:
             status_response, detail = get_error_status_code_from_exception(e)
             return Response(data=detail, status=status_response)
