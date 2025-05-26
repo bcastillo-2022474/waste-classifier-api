@@ -126,7 +126,6 @@ class WasteImageScanApiView(APIView):
             ))
             return Response(waste_item)
         except Exception as e:
-            print(e)
             status_response, detail = get_error_status_code_from_exception(e)
             return Response(status=status_response, data=detail)
 

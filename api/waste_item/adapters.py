@@ -20,21 +20,21 @@ class ImageScannerRepositoryImpl(ImageScannerRepository):
 
     def scan(self, image: Image) -> WasteItemInfo:
         # randomized mocked data
-        json = self._trash_classifier_service.analyze_waste_image(
+        response_data = self._trash_classifier_service.analyze_waste_image(
             base64_image=base64.b64encode(image.content).decode('utf-8')
         )
 
-        print(json)
+        print(response_data)
 
-        if not json["success"]:
+        if not response_data["success"]:
             raise ValueError("Image analysis failed")
 
-        response = json["classification"]
+        item_info = response_data["classification"]
 
         return WasteItemInfo(
-            material=response['material'],
-            type=response['type'],
-            approximate_weight=response['approximate_weight']
+            material=item_info['material'],
+            type=item_info['type'],
+            approximate_weight=item_info['approximate_weight']
         )
 
 
